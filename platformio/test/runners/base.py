@@ -39,6 +39,7 @@ class TestRunnerOptions:  # pylint: disable=too-many-instance-attributes
         monitor_rts=None,
         monitor_dtr=None,
         program_args=None,
+        allow_disconnect=False,
     ):
         self.verbose = verbose
         self.without_building = without_building
@@ -51,6 +52,7 @@ class TestRunnerOptions:  # pylint: disable=too-many-instance-attributes
         self.monitor_rts = monitor_rts
         self.monitor_dtr = monitor_dtr
         self.program_args = program_args
+        self.allow_disconnect = allow_disconnect
 
 
 class TestRunnerBase:
@@ -68,6 +70,7 @@ class TestRunnerBase:
         )
         self.cmd_ctx = None
         self._testing_output_buffer = ""
+        self.reader = None
 
     @property
     def name(self):
@@ -167,12 +170,20 @@ class TestRunnerBase:
                 f"env:{self.test_suite.env_name}", "test_testing_command"
             ),
         ]
+
         reader = (
-            NativeTestOutputReader(self)
+            self.create_native_reader()
             if any(native_conds)
-            else SerialTestOutputReader(self)
+            else self.create_serial_reader()
         )
+        self.reader = reader
         return reader.begin()
+
+    def create_native_reader(self):
+        return NativeTestOutputReader(self)
+
+    def create_serial_reader(self):
+        return SerialTestOutputReader(self)
 
     def teardown(self):
         pass
@@ -212,4 +223,7 @@ class TestRunnerBase:
             self.on_testing_line_output(line)
 
     def on_testing_line_output(self, line):
-        click.echo(line, nl=False)
+        if self.options.verbose:
+            click.echo(line, nl=False)
+
+        self.reader.on_testing_line_output(line)

@@ -134,3 +134,6 @@ class NativeTestOutputReader:
         finally:
             self.aio_loop.run_until_complete(self.aio_loop.shutdown_asyncgens())
             self.aio_loop.close()
+
+    def on_testling_line_output(self, line):
+        return line

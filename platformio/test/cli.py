@@ -59,6 +59,7 @@ from platformio.test.runners.factory import TestRunnerFactory
 @click.option("--without-building", is_flag=True)
 @click.option("--without-uploading", is_flag=True)
 @click.option("--without-testing", is_flag=True)
+@click.option("--allow-disconnect", is_flag=True)
 @click.option("--no-reset", is_flag=True)
 @click.option(
     "--monitor-rts",
@@ -106,6 +107,7 @@ def cli(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too
     monitor_rts,
     monitor_dtr,
     program_args,
+    allow_disconnect,
     list_tests,
     json_output,
     json_output_path,
@@ -148,6 +150,7 @@ def cli(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too
                     monitor_rts=monitor_rts,
                     monitor_dtr=monitor_dtr,
                     program_args=program_args,
+                    allow_disconnect=allow_disconnect,
                 ),
             )
             click.echo()

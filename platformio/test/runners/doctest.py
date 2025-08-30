@@ -108,8 +108,7 @@ class DoctestTestRunner(TestRunnerBase):
         self._tc_parser = DoctestTestCaseParser()
 
     def on_testing_line_output(self, line):
-        if self.options.verbose:
-            click.echo(line, nl=False)
+        super().on_testing_line_output(line)
 
         test_case = self._tc_parser.parse(line)
         if test_case:

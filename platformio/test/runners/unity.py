@@ -260,8 +260,7 @@ void unityOutputComplete(void) { unittest_uart_end(); }
             )
 
     def on_testing_line_output(self, line):
-        if self.options.verbose:
-            click.echo(line, nl=False)
+        super().on_testing_line_output(line)
         line = strip_ansi_codes(line or "").strip()
         if not line:
             return
